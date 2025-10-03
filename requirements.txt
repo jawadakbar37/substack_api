@@ -1,4 +1,4 @@
 # requirements.txt
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
-substack_api==1.0.0
+substack-api
