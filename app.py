@@ -4,9 +4,9 @@ from pydantic import BaseModel
 from typing import Optional
 import hashlib
 
-from substack_api.post import Post  # from the repo's package
+from substack_api.post import Post  # pip install substack-api
 
-app = FastAPI()
+app = FastAPI(title="Substack Proxy")
 
 class PostOut(BaseModel):
     url: str
@@ -21,8 +21,17 @@ class PostOut(BaseModel):
     sha256: Optional[str] = None
     source: str
 
+@app.get("/")
+def root():
+    # sanity endpoint
+    return {"ok": True, "routes": ["/", "/healthz", "/post"]}
+
+@app.get("/healthz")
+def healthz():
+    return {"ok": True}
+
 @app.get("/post", response_model=PostOut)
-def get_post(url: str = Query(...)):
+def get_post(url: str = Query(..., description="Public Substack post URL")):
     try:
         p = Post(url)  # public posts only
         md = p.get_metadata()
